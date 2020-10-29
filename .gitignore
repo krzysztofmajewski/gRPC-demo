@@ -5,5 +5,10 @@
 
 # JetBrains IDE
 .idea/
+__pycache__/
+demo_pb2.py
+demo_pb2_grpc.py
+grpc/
+venv/
 
 
