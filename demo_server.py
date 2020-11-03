@@ -9,6 +9,7 @@ import demo_pb2
 import demo_pb2_grpc
 
 
+# Create a database of user profiles
 def init_users():
     chris = dict()
     chris['last_name'] = 'Majewski'
@@ -19,10 +20,12 @@ def init_users():
     return {1: chris}
 
 
+# Subclass the Servicer
 class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
     def __init__(self):
         self.users = init_users()
 
+    # Server business logic :)
     def GetUserProfile(self, request, context):
         # TODO: error handling
         user = self.users[request.id]
@@ -35,6 +38,7 @@ class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
                                             id=request.id)
 
 
+# Server plumbing
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     demo_pb2_grpc.add_DemoServiceServicer_to_server(
