@@ -27,8 +27,13 @@ class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
 
     # Server business logic :)
     def GetUserProfile(self, request, context):
-        # TODO: error handling
-        user = self.users[request.id]
+        try:
+            user = self.users[request.id]
+        except KeyError as ke:
+            context.set_details(f"""No user found for id {request.id}""")
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            return demo_pb2.UserProfileResponse()
+
         # TODO: what happens if id not set in response?
         return demo_pb2.UserProfileResponse(last_name=user['last_name'],
                                             first_name=user['first_name'],
