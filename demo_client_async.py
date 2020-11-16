@@ -1,5 +1,6 @@
 """gRPC demo -- client code"""
 import logging
+import asyncio
 
 import grpc
 
@@ -7,13 +8,13 @@ import demo_pb2
 import demo_pb2_grpc
 
 
-def demo_get_user_profile(stub, user_id, timeout=None):
+async def demo_get_user_profile(stub, user_id, timeout=None):
     print()
     print(f"""Requesting profile for user with id {user_id}""")
 
     request = demo_pb2.UserProfileRequest(id=user_id)
     try:
-        response = stub.GetUserProfile(request, timeout=timeout)
+        response = await stub.GetUserProfile(request, timeout=timeout)
     except grpc.RpcError as e:
         status_code = e.code()
         print(f"""Server returned error {status_code.name}""")
@@ -32,14 +33,17 @@ def demo_get_user_profile(stub, user_id, timeout=None):
     print()
 
 
-def run():
-    with grpc.insecure_channel('localhost:50051') as channel:
+async def run():
+    async with grpc.aio.insecure_channel('localhost:50051') as channel:
         stub = demo_pb2_grpc.DemoServiceStub(channel)
-        demo_get_user_profile(stub, 1, timeout=1)
-        demo_get_user_profile(stub, 2, timeout=1)
-        demo_get_user_profile(stub, 1)
+        task1 = asyncio.create_task(demo_get_user_profile(stub, 1, timeout=1))
+        task2 = asyncio.create_task(demo_get_user_profile(stub, 2))
+        task3 = asyncio.create_task(demo_get_user_profile(stub, 1))
+        await task1
+        await task2
+        await task3
 
 
 if __name__ == '__main__':
     logging.basicConfig()
-    run()
+    asyncio.run(run())
