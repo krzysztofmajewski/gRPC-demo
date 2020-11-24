@@ -48,6 +48,7 @@ class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
         for msg in request_iterator:
             ack = msg
             ack.message += " ack"
+            time.sleep(1)
             yield ack
 
 
