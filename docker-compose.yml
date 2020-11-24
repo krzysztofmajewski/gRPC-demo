@@ -1,0 +1,18 @@
+version: '3'
+services:
+  envoy_demo:
+    build:
+      context: ./
+      dockerfile: ./web/Dockerfile_envoy
+    image: grpcweb/envoy_demo
+    ports:
+      - "8080:8080"
+  commonjs-client_demo:
+    build:
+      context: ./
+      dockerfile: ./web/Dockerfile_js
+#    depends_on:
+#      - prereqs
+    image: grpcweb/commonjs-client_demo
+    ports:
+      - "8081:8081"

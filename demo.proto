@@ -3,6 +3,9 @@ syntax = "proto3";
 // Interface exported by the server.
 service DemoService {
    rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse) {}
+
+   rpc Chat(stream ChatMessage) returns (stream ChatMessage) {}
+
 }
 
 // The request message containing the user's ID.
@@ -18,6 +21,10 @@ message UserProfileResponse {
   string job_title = 4;
   bool active = 5;
   int32 id = 6;
+}
+
+message ChatMessage {
+  string message = 1;
 }
 
 

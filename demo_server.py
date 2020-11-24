@@ -28,6 +28,7 @@ class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
 
     # Server business logic :)
     def GetUserProfile(self, request, context):
+        print("Received client request")
         try:
             user = self.users[request.id]
         except KeyError:
@@ -36,13 +37,18 @@ class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
             return demo_pb2.UserProfileResponse()
 
         time.sleep(2)
-        # TODO: what happens if id not set in response?
         return demo_pb2.UserProfileResponse(last_name=user['last_name'],
                                             first_name=user['first_name'],
                                             phone=user['phone'],
                                             job_title=user['job_title'],
                                             active=user['active'],
                                             id=request.id)
+
+    def Chat(self, request_iterator, context):
+        for msg in request_iterator:
+            ack = msg
+            ack.message += " ack"
+            yield ack
 
 
 # Server plumbing
