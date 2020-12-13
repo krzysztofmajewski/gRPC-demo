@@ -28,7 +28,7 @@ class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
 
     # Server business logic :)
     def GetUserProfile(self, request, context):
-        print("Received client request")
+        print("Received client request GetUserProfile()")
         try:
             user = self.users[request.id]
         except KeyError:
@@ -45,6 +45,7 @@ class DemoServiceServicer(demo_pb2_grpc.DemoServiceServicer):
                                             id=request.id)
 
     def Chat(self, request_iterator, context):
+        print("Received client request Chat()")
         for msg in request_iterator:
             ack = msg
             ack.message += " ack"
